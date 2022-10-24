@@ -23,7 +23,7 @@ func New(InternetAccessTestUrl string, proxyUrl string) (HttpCheckerImpl, error)
 	return HttpCheckerImpl{
 		InternetAccessTestUrl: InternetAccessTestUrl,
 		ProxyUrl:              proxyUrl2,
-		TimeoutInMilliseconds: 2000,
+		TimeoutInMilliseconds: 5000,
 	}, nil
 }
 
