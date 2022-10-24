@@ -1,0 +1,12 @@
+# the binary
+isetta
+__debug_bin
+.vscode/
+
+mocks/
+tmp/
+
+# gimp backup file
+*.bkp
+# dia temp file
+*.dtmp

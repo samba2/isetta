@@ -1,0 +1,1 @@
+- open in Windows Gimp: file:////wsl$//Ubuntu//home//<your home>//git//isetta//doc//isetta-and-gophers.xcf
