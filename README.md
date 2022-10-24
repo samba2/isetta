@@ -1,6 +1,6 @@
 # Isetta - Painless Cooperate Proxy in WSL2
 
-![isetta-image](doc/isetta-and-gophers.webp)
+<img src="doc/isetta-and-gophers.webp" width=500>
 
 `isetta` is a small command line tool to configure your Windows WSL2 environment to work through a company proxy. `isetta` runs inside WSL2 and requires a NTLM proxy server like [Px](https://github.com/genotrance/px) to exist on the Windows side.
 
@@ -51,7 +51,7 @@ chmod u+x isetta
 This copy+paste snippet create a minimal configuration which just needs your cooperate DNS server to be adjusted.
 
 ````sh
-cat > /tmp/.isetta <<EOL
+cat > ~/.isetta <<EOL
 [dns]
 # adjust this to your company's DNS server address
 private_server = "42.42.42.42"
@@ -168,6 +168,7 @@ The first two scenarios require the same setup effort. The direct connection sce
 This is rather complex:
 
 ![isetta-networking overview](./doc/isetta-network-overview.png)
+    
 *WSL2 internet access via cooperate proxy*
 
 `isetta` performs these configurations:
