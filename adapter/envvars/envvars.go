@@ -38,7 +38,7 @@ func (c *ConsoleEnvVarPrinter) buildPrintExportCommands() string {
 }
 
 func (c *ConsoleEnvVarPrinter) PrintUnsetCommands() {
-	fmt.Print(strings.Trim(unsetEnvironmentVariables, "\n"))
+	fmt.Println(strings.Trim(unsetEnvironmentVariables, "\n"))
 }
 
 func (c *ConsoleEnvVarPrinter) WarnIfProxyVarSet() {
