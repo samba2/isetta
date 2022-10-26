@@ -101,6 +101,8 @@ export http_proxy=http://169.254.254.1:3128
 export NO_PROXY=localhost,127.0.0.1,169.254.254.1
 ````
 
+Note: An existing `NO_PROXY` environment variable is detected. It's content is appended to the `export NO_PROXY` line.
+
 Output with direct internet connection (unset all proxy variables):
 ````sh
 unset HTTPS_PROXY
