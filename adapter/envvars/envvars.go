@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
 	log "org.samba/isetta/simplelogger"
 )
 
@@ -29,6 +30,7 @@ unset NO_PROXY
 type ConsoleEnvVarPrinter struct{
 	WindowsIp string
 	PxProxyPort int
+	NoProxy []string
 }
 
 func (c *ConsoleEnvVarPrinter) PrintExportCommands() {
@@ -41,15 +43,23 @@ func (c *ConsoleEnvVarPrinter) buildPrintExportCommands() string {
 	
 	trimmedNoProxyVar := strings.Trim(exportNoProxyVariable, "\n") 
 	noProxyVar := fmt.Sprintf(trimmedNoProxyVar, c.WindowsIp)
-	appendNoProxyEnvVar(&noProxyVar)
+	c.appendNoProxyEnvVar(&noProxyVar)
+	c.appendNoProxyConfig(&noProxyVar)
 	
 	return fmt.Sprintf("%v\n%v", httpVars, noProxyVar)
 }
 
-func appendNoProxyEnvVar(noProxyVar *string) {
+func (c *ConsoleEnvVarPrinter) appendNoProxyEnvVar(noProxyVar *string) {
 	noProxyFromEnv := os.Getenv("NO_PROXY")
 	if noProxyFromEnv != "" {
 		*noProxyVar = fmt.Sprintf("%v,%v", *noProxyVar, noProxyFromEnv)
+	}
+}
+
+func (c *ConsoleEnvVarPrinter) appendNoProxyConfig(noProxyVar *string) {
+	if len(c.NoProxy) > 0 {
+		noProxyList := strings.Join(c.NoProxy, ",")
+		*noProxyVar = fmt.Sprintf("%v,%v", *noProxyVar, noProxyList)
 	}
 }
 

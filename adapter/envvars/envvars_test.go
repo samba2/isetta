@@ -50,3 +50,32 @@ func TestNoProxyWithoutEnvVar(t *testing.T) {
 
 	assert.Regexp(t, "export NO_PROXY=localhost,127.0.0.1,1.1.1.1$", uut.buildPrintExportCommands())	
 }
+
+func TestConfiguredNoProxyEntriesAreAppended(t *testing.T) {
+	uut := ConsoleEnvVarPrinter{
+		WindowsIp: "1.1.1.1",
+		PxProxyPort: 4242,
+		NoProxy: []string{
+			"foo", 
+			"bar",
+		},
+	}
+
+	assert.Regexp(t, "export NO_PROXY=localhost,127.0.0.1,1.1.1.1,foo,bar$", uut.buildPrintExportCommands())	
+}	
+
+func TestNoProxyEnvVarAndConfiguredOneAreAppended(t *testing.T) {
+	os.Setenv("NO_PROXY", "fooEnv,barEnv")
+
+	uut := ConsoleEnvVarPrinter{
+		WindowsIp: "1.1.1.1",
+		PxProxyPort: 4242,
+		NoProxy: []string{
+			"fooConf", 
+			"barConf",
+		},
+	}
+
+	assert.Regexp(t, "export NO_PROXY=localhost,127.0.0.1,1.1.1.1,fooEnv,barEnv,fooConf,barConf$", uut.buildPrintExportCommands())	
+	os.Unsetenv("NO_PROXY")
+}	
