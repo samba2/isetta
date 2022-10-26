@@ -2,9 +2,16 @@
 
 <img src="doc/isetta-and-gophers.webp" width=500>
 
-`isetta` is a small command line tool to configure your Windows WSL2 environment to work through a company proxy. `isetta` runs inside WSL2 and requires a NTLM proxy server like [Px](https://github.com/genotrance/px) to exist on the Windows side.
+`isetta` is a small command line tool to configure your Windows WSL2 environment to work through a company proxy. `isetta` runs inside WSL2 and requires [Px](https://github.com/genotrance/px) or a different proxy forwarder to exist on the Windows side.
 
 Disclaimer: This is a hobbyist software project which is not related to [the 50ies Isetta microcar](https://en.wikipedia.org/wiki/Isetta). However, the software tool tries to be as nimble and puristic as this old beauty 😉.
+
+## Prerequisites
+
+- [Px proxy](https://github.com/genotrance/px)
+- WSL2 already installed
+
+Note: [gontlm-proxy](https://github.com/bdwyertech/gontlm-proxy) and [winfoom](https://github.com/ecovaci/winfoom) look like good replacements for Px proxy but I did not test them.
 
 ## Usage
 
@@ -18,12 +25,11 @@ $ source <(isetta -env-settings)
 $ curl www.google.com
 ````
 
-
 ## Install
 
 `isetta` comes as single binary which which should be copied to a directory inside your `PATH`. 
 
-We suggest to have your own local `/home/your-username/bin` directory which is added to the `PATH` environment variable, either in `.bashrc` (bash) or `.zshrc` (zsh)
+I suggest to have your own local `/home/your-username/bin` directory which is added to the `PATH` environment variable, either in `.bashrc` (bash) or `.zshrc` (zsh)
 
 Example:
 ```sh
@@ -173,7 +179,7 @@ This is rather complex:
 
 `isetta` performs these configurations:
 - create a new point-to-point network between WSL2 and Windows. This became necessary as the default WSL2-to-Windows network used a subnet which was sometimes blocked by a local firewall and/ or was not routed via the VPN.
-- configure a [Windows port proxy to allow WSL2 traffic to talk to the NTLM proxy](https://learn.microsoft.com/en-us/windows/wsl/networking#accessing-a-wsl-2-distribution-from-your-local-area-network-lan) (Px proxy) on Windows
+- configure a [Windows port proxy to allow WSL2 traffic to talk to Px proxy](https://learn.microsoft.com/en-us/windows/wsl/networking#accessing-a-wsl-2-distribution-from-your-local-area-network-lan) on Windows
 - adjust the default route on the Linux side
 - set the DNS lookup configuration in `/etc/resolve.conf` to the configured private (aka cooperate) DNS server
 
@@ -181,7 +187,7 @@ This is rather complex:
 
 `isetta` allows you to easily switch back the above configuration if it detects a direct network connection. In this case:
 - the DNS server in `/etc/resolve.conf` is changed to the public DNS server
-- if executed with the `-env-settings` flag, it unsets the `HTTPS_PROXY` variables to disable routing via the NTLM proxy. See above for a usage example.
+- if executed with the `-env-settings` flag, it unsets the `HTTPS_PROXY` variables to disable routing via Px proxy. See above for a usage example.
 
 
 ## Project Background
@@ -190,7 +196,6 @@ This is rather complex:
 - I was looking for a real world use-case to do something with Golang. 
 
 The result is `isetta` - a glorified shellscript with a funky architecture 😉.
-
 
 ## Development
 
