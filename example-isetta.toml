@@ -1,0 +1,32 @@
+# Note: Currently Isetta expects the config file under
+# /home/<your user>/.isetta
+
+[general]
+# address for checking the internet connectivity
+# optional, default: https://www.google.com/
+internet_access_test_url = "https://www.google.com/"
+
+# log level
+# possible values: trace, debug, info, warn, error
+# optional, default: info
+log_level = "info"
+
+[network]
+# subnet to be used for point-to-point network
+# between Linux WSL2 and Windows.
+# optional, default: 169.254.254.0/24
+wsl_to_windows_subnet = "169.254.254.0/24"
+
+# port on which Px proxy is listening on Windows
+# optional, default: 3128
+px_proxy_port = 3128
+
+[dns]
+# your cooperate/ interal DNS server
+# mandatory
+private_server = "1.2.3.4"
+
+# DNS server to be set in resolv.conf when you are
+# directly connected to the internet
+# optional, default: 8.8.8.8
+public_server    = "8.8.8.8"

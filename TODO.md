@@ -1,6 +1,5 @@
 Fix/ Investigate
 =================
-- naming: was px_proxy, is: ntlm_proxy
 - naming: private_dns_server -> cooperate_dns_server ?
 
 Implement

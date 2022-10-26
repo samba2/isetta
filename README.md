@@ -6,12 +6,14 @@
 
 Disclaimer: This is a hobbyist software project which is not related to [the 50ies Isetta microcar](https://en.wikipedia.org/wiki/Isetta). However, the software tool tries to be as nimble and puristic as this old beauty 😉.
 
+
 ## Prerequisites
 
 - [Px proxy](https://github.com/genotrance/px)
 - WSL2 already installed
 
 Note: [gontlm-proxy](https://github.com/bdwyertech/gontlm-proxy) and [winfoom](https://github.com/ecovaci/winfoom) look like good replacements for Px proxy but I did not test them.
+
 
 ## Usage
 
@@ -24,6 +26,7 @@ Info: Done setting up Linux network via proxy
 $ source <(isetta -env-settings)
 $ curl www.google.com
 ````
+
 
 ## Install
 
@@ -52,6 +55,7 @@ chmod u+x isetta
 
 `isetta` needs to know your private (aka "internal" aka "cooperate") DNS server. This information is stored in the `~/.isetta` config file in [TOML format](https://toml.io/en/).
 
+
 ### Minimal Setup
 
 This copy+paste snippet create a minimal configuration which just needs your cooperate DNS server to be adjusted.
@@ -69,9 +73,10 @@ There are various ways to find out about your cooperate DNS server. Here is one 
 - enter `nslookup`
 - you enter an interactive prompt, the second line `Address` tells you the DNS server
 
+
 ### Further Config Options
 
-For an example configuration file containing all supported options and their description, see [here](./fixture/.isetta).
+For an example configuration file containing all supported options and their description, see [here](./example-isetta.toml).
 
 
 ## Running
@@ -127,6 +132,7 @@ sudo isetta && source <(isetta -env-settings)
 `isetta` does configuration changes on the Linux and on the Windows side. For this, it needs Linux root and Windows admin rights.
 
 For Linux root rights, `sudo` is used. For admin rights on Windows, `isetta` ships with an embedded copy of [`gsudo`](https://github.com/gerardog/gsudo) and, **if needed, will prompt the user for it's Windows admin credentials**.
+
 
 ## Better Living With sudo
 
@@ -196,6 +202,7 @@ This is rather complex:
 - I was looking for a real world use-case to do something with Golang. 
 
 The result is `isetta` - a glorified shellscript with a funky architecture 😉.
+
 
 ## Development
 

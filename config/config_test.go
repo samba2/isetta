@@ -85,7 +85,7 @@ func TestFromConfigFile(t *testing.T) {
 
 	cfg := FromConfigFile(configFileDir, validLogLevels)
 	assert.Equal(t, "https://www.google.com/", cfg.General.InternetAccessTestUrl)
-	assert.Equal(t, "trace", cfg.General.LogLevel)
+	assert.Equal(t, "info", cfg.General.LogLevel)
 	assert.Equal(t, "169.254.254.0/24", cfg.Network.WslToWindowsSubnet)
 	assert.Equal(t, 3128, cfg.Network.PxProxyPort)
 	assert.Equal(t, "1.2.3.4", cfg.Dns.PrivateServer)
