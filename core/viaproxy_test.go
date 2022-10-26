@@ -21,16 +21,16 @@ func setupViaProxy(t *testing.T) {
 	mockLinuxConfigurer = mocks.NewLinuxConfigurer(t)
 
 	viaProxy = ViaProxy{
-		LinuxP2pIp: "linux-ip",
-		WindowsP2pIp: "windows-ip",
-		PxProxyPort: 3128,
-		PrivateDnsServer: "42.42.42.42",
-		WindowsChecker: mockWinChecker,
+		LinuxP2pIp:        "linux-ip",
+		WindowsP2pIp:      "windows-ip",
+		PxProxyPort:       3128,
+		InternalDnsServer: "42.42.42.42",
+		WindowsChecker:    mockWinChecker,
 		WindowsConfigurer: mockWinConfigurer,
-		DnsConfigurer: mockDnsConfigurer,
-		LinuxPinger: mockLinuxPinger,
-		LinuxConfigurer: mockLinuxConfigurer,
-		HttpChecker: mockHttpChecker,
+		DnsConfigurer:     mockDnsConfigurer,
+		LinuxPinger:       mockLinuxPinger,
+		LinuxConfigurer:   mockLinuxConfigurer,
+		HttpChecker:       mockHttpChecker,
 	}
 }
 
@@ -40,7 +40,7 @@ func TestConfigureAccessViaProxy(t *testing.T) {
 	// PX proxy is active on Windows
 	mockWinChecker.On("IsPxProxyRunning").Return(true)
 
-	// set private DNS server in resolve.conf
+	// set internal DNS server in resolve.conf
 	mockDnsConfigurer.On("ActivateDnsServer", "42.42.42.42").Return()
 
 	// Linux P2P IP is not up, but after SetP2pInterface was called, it will be up
@@ -57,7 +57,7 @@ func TestConfigureAccessViaProxy(t *testing.T) {
 	mockWinConfigurer.On("AddP2pAddress", mock.Anything).Return(nil)
 	mockWinConfigurer.On("SetPortProxy", mock.Anything).Return(nil)
 
-	// private DNS can't be reached, first need to configure
+	// internal DNS can't be reached, first need to configure
 	// default gateway. After that, it can be reached
 	mockLinuxPinger.On("Ping", "42.42.42.42").Return(false).Once()
 	// default gateway on Linux side
@@ -159,7 +159,6 @@ func TestConfigureAccessViaProxyHasError2(t *testing.T) {
 
 	assert.Error(t, viaProxy.configureWindowsSide())
 }
-
 
 func TestErrorWhenSettingP2pAddressFailed(t *testing.T) {
 	setupViaProxy(t)

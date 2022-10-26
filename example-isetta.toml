@@ -24,7 +24,7 @@ px_proxy_port = 3128
 [dns]
 # your cooperate/ interal DNS server
 # mandatory
-private_server = "1.2.3.4"
+internal_server = "1.2.3.4"
 
 # DNS server to be set in resolv.conf when you are
 # directly connected to the internet

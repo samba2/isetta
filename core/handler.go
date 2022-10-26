@@ -7,19 +7,19 @@ import (
 )
 
 type Handler struct {
-	RunningAsRoot    bool
-	PrivateDnsServer string
-	PublicDnsServer  string
-	WindowsChecker   WindowsChecker
-	DnsConfigurer    DnsConfigurer
-	EnvVarPrinter    EnvVarPrinter
-	DirectAccess     NetworkConfigurer
-	ViaProxy         NetworkConfigurer
+	RunningAsRoot     bool
+	InternalDnsServer string
+	PublicDnsServer   string
+	WindowsChecker    WindowsChecker
+	DnsConfigurer     DnsConfigurer
+	EnvVarPrinter     EnvVarPrinter
+	DirectAccess      NetworkConfigurer
+	ViaProxy          NetworkConfigurer
 }
 
 func (h *Handler) PrintEnvVars() {
 	log.Logger.CurrentLogLevel = log.LevelError
-	if h.WindowsChecker.IsPingable(h.PrivateDnsServer) {
+	if h.WindowsChecker.IsPingable(h.InternalDnsServer) {
 		h.EnvVarPrinter.PrintExportCommands()
 	} else if h.WindowsChecker.IsPingable(h.PublicDnsServer) {
 		h.EnvVarPrinter.PrintUnsetCommands()
@@ -39,8 +39,8 @@ func (h *Handler) ConfigureNetwork() error {
 	h.DnsConfigurer.DisableResolveAutoConfGeneration()
 
 	log.Logger.Info("Detecting network connection")
-	if h.WindowsChecker.IsPingable(h.PrivateDnsServer) {
-		log.Logger.Debug("Private DNS server is reachable")
+	if h.WindowsChecker.IsPingable(h.InternalDnsServer) {
+		log.Logger.Debug("Internal DNS server is reachable")
 		log.Logger.Info("Found internet access via proxy")
 		err = h.ViaProxy.Configure()
 		if err != nil {
@@ -55,7 +55,7 @@ func (h *Handler) ConfigureNetwork() error {
 			return err
 		}
 	} else {
-		return errors.New("neither the private nor the public DNS server is reachable - are you offline?")
+		return errors.New("neither the internal nor the public DNS server is reachable - are you offline?")
 	}
 
 	return nil

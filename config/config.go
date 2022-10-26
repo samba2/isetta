@@ -13,10 +13,10 @@ import (
 
 var defaults = map[string]string{
 	"general.internet_access_test_url": "https://www.google.com/",
-	"general.log_level":              "info",
-	"network.wsl_to_windows_subnet":  "169.254.254.0/24",
-	"network.px_proxy_port":          "3128",
-	"dns.public_server":              "8.8.8.8",
+	"general.log_level":                "info",
+	"network.wsl_to_windows_subnet":    "169.254.254.0/24",
+	"network.px_proxy_port":            "3128",
+	"dns.public_server":                "8.8.8.8",
 }
 
 type Config struct {
@@ -43,8 +43,8 @@ type P2p struct {
 }
 
 type Dns struct {
-	PrivateServer string `mapstructure:"private_server" validate:"required,ip4_addr"`
-	PublicServer  string `mapstructure:"public_server" validate:"ip4_addr"`
+	InternalServer string `mapstructure:"internal_server" validate:"required,ip4_addr"`
+	PublicServer   string `mapstructure:"public_server" validate:"ip4_addr"`
 }
 
 func init() {

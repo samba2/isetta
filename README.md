@@ -53,7 +53,7 @@ chmod u+x isetta
 
 ## Configure
 
-`isetta` needs to know your private (aka "internal" aka "cooperate") DNS server. This information is stored in the `~/.isetta` config file in [TOML format](https://toml.io/en/).
+`isetta` needs to know your internal (aka "cooperate") DNS server. This information is stored in the `~/.isetta` config file in [TOML format](https://toml.io/en/).
 
 
 ### Minimal Setup
@@ -64,7 +64,7 @@ This copy+paste snippet create a minimal configuration which just needs your coo
 cat > ~/.isetta <<EOL
 [dns]
 # adjust this to your company's DNS server address
-private_server = "42.42.42.42"
+internal_server = "42.42.42.42"
 EOL
 ````
 
@@ -187,7 +187,7 @@ This is rather complex:
 - create a new point-to-point network between WSL2 and Windows. This became necessary as the default WSL2-to-Windows network used a subnet which was sometimes blocked by a local firewall and/ or was not routed via the VPN.
 - configure a [Windows port proxy to allow WSL2 traffic to talk to Px proxy](https://learn.microsoft.com/en-us/windows/wsl/networking#accessing-a-wsl-2-distribution-from-your-local-area-network-lan) on Windows
 - adjust the default route on the Linux side
-- set the DNS lookup configuration in `/etc/resolve.conf` to the configured private (aka cooperate) DNS server
+- set the DNS lookup configuration in `/etc/resolve.conf` to the configured internal (aka cooperate) DNS server
 
 ### Direct Connection
 

@@ -62,7 +62,7 @@ func setupDependencies(conf config.Config) core.Handler {
 	directAccess := core.DirectAccess{
 		PublicDnsServer: conf.Dns.PublicServer,
 		DnsConfigurer:   dnsConfigurer,
-		LinuxPinger: &linuxPinger,
+		LinuxPinger:     &linuxPinger,
 		LinuxConfigurer: &linuxConfigurer,
 		HttpChecker:     &httpchecker,
 		EnvVarPrinter:   &envVarprinter,
@@ -70,10 +70,10 @@ func setupDependencies(conf config.Config) core.Handler {
 
 	viaproxy := core.ViaProxy{
 		// static
-		LinuxP2pIp:       conf.Network.P2p.LinuxIp,
-		WindowsP2pIp:     conf.Network.P2p.WindowsIp,
-		PxProxyPort:      conf.Network.PxProxyPort,
-		PrivateDnsServer: conf.Dns.PrivateServer,
+		LinuxP2pIp:        conf.Network.P2p.LinuxIp,
+		WindowsP2pIp:      conf.Network.P2p.WindowsIp,
+		PxProxyPort:       conf.Network.PxProxyPort,
+		InternalDnsServer: conf.Dns.InternalServer,
 		// objects
 		WindowsChecker:    &windowsChecker,
 		WindowsConfigurer: &windowsConfigurer,
@@ -84,14 +84,14 @@ func setupDependencies(conf config.Config) core.Handler {
 	}
 
 	handler := core.Handler{
-		RunningAsRoot:    os.Geteuid() == 0,
-		PrivateDnsServer: conf.Dns.PrivateServer,
-		PublicDnsServer:  conf.Dns.PublicServer,
-		WindowsChecker:   &windowsChecker,
-		DnsConfigurer:    &dnsConfigurer,
-		EnvVarPrinter:    &envVarprinter,
-		DirectAccess:     &directAccess,
-		ViaProxy:         &viaproxy,
+		RunningAsRoot:     os.Geteuid() == 0,
+		InternalDnsServer: conf.Dns.InternalServer,
+		PublicDnsServer:   conf.Dns.PublicServer,
+		WindowsChecker:    &windowsChecker,
+		DnsConfigurer:     &dnsConfigurer,
+		EnvVarPrinter:     &envVarprinter,
+		DirectAccess:      &directAccess,
+		ViaProxy:          &viaproxy,
 	}
 
 	return handler

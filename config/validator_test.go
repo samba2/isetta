@@ -14,7 +14,7 @@ func TestTooHighPortNumber(t *testing.T) {
 px_proxy_port = 70000
 
 [dns]
-private_server = "1.2.3.4"
+internal_server = "1.2.3.4"
 `
 
 	err := validate(exampleConfig)
@@ -22,7 +22,7 @@ private_server = "1.2.3.4"
 	assert.ErrorContains(t, err, "PxProxyPort")
 }
 
-func TestValidationErrorWhenMandatoryPrivateDnsServerIsMissing(t *testing.T) {
+func TestValidationErrorWhenMandatoryInternalDnsServerIsMissing(t *testing.T) {
 	err := validate("")
 	assert.Error(t, err)
 }
@@ -33,7 +33,7 @@ func TestTranslationIsWorking(t *testing.T) {
 internet_access_test_url = "foo"
 	
 [dns]
-private_server = "1.2.3.4"
+internal_server = "1.2.3.4"
 `
 	err := validate(exampleConfig)
 	assert.Error(t, err)
@@ -46,7 +46,7 @@ func TestErrorOnTooSmallNetwork(t *testing.T) {
 wsl_to_windows_subnet = "169.254.254.0/31"
 
 [dns]
-private_server = "1.2.3.4"
+internal_server = "1.2.3.4"
 `
 
 	err := validate(exampleConfig)
@@ -60,7 +60,7 @@ func TestErrorOnWrongLogLevel(t *testing.T) {
 log_level = "foolevel"
 	
 [dns]
-private_server = "1.2.3.4"
+internal_server = "1.2.3.4"
 `
 
 	conf := readConfigFromBuffer(bytes.NewBufferString(exampleConfig))

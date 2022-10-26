@@ -11,7 +11,7 @@ type ViaProxy struct {
 	LinuxP2pIp        string
 	WindowsP2pIp      string
 	PxProxyPort       int
-	PrivateDnsServer  string
+	InternalDnsServer string
 	WindowsChecker    WindowsChecker
 	WindowsConfigurer WindowsConfigurer
 	DnsConfigurer     DnsConfigurer
@@ -26,7 +26,7 @@ func (p *ViaProxy) Configure() error {
 		return err
 	}
 
-	p.DnsConfigurer.ActivateDnsServer(p.PrivateDnsServer)
+	p.DnsConfigurer.ActivateDnsServer(p.InternalDnsServer)
 	err = p.setupLinuxP2pInterfaceIfNeeded()
 	if err != nil {
 		return err
@@ -131,12 +131,12 @@ func (p *ViaProxy) configureWindowsSide() error {
 }
 
 func (p *ViaProxy) configureDefaultGatewayIfNeeded() error {
-	if !p.isPrivateDnsServerUp() {
+	if !p.isInternalDnsServerUp() {
 		log.Logger.Debug("Configuring default gateway")
 		p.LinuxConfigurer.DeleteDefaultGateway()
 		p.LinuxConfigurer.AddDefaultGateway()
 
-		if !p.isPrivateDnsServerUp() {
+		if !p.isInternalDnsServerUp() {
 			return errors.New("failed to adjust default gateway 🤔")
 		}
 	}
@@ -144,12 +144,12 @@ func (p *ViaProxy) configureDefaultGatewayIfNeeded() error {
 	return nil
 }
 
-func (p *ViaProxy) isPrivateDnsServerUp() bool {
-	if p.LinuxPinger.Ping(p.PrivateDnsServer) {
-		log.Logger.Debug("Private DNS %v can be reached from within Linux. Default gateway works", p.PrivateDnsServer)
+func (p *ViaProxy) isInternalDnsServerUp() bool {
+	if p.LinuxPinger.Ping(p.InternalDnsServer) {
+		log.Logger.Debug("Internal DNS %v can be reached from within Linux. Default gateway works", p.InternalDnsServer)
 		return true
 	} else {
-		log.Logger.Debug("Private DNS %v can't be reached from within Linux", p.PrivateDnsServer)
+		log.Logger.Debug("Internal DNS %v can't be reached from within Linux", p.InternalDnsServer)
 		return false
 	}
 }

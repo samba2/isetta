@@ -23,7 +23,7 @@ wsl_to_windows_subnet = "169.254.254.0/24"
 px_proxy_port = 3128
 
 [dns]
-private_server = "1.2.3.4"
+internal_server = "1.2.3.4"
 public_server    = "8.8.8.8"
 `
 
@@ -32,21 +32,21 @@ public_server    = "8.8.8.8"
 	assert.Equal(t, "trace", cfg.General.LogLevel)
 	assert.Equal(t, "169.254.254.0/24", cfg.Network.WslToWindowsSubnet)
 	assert.Equal(t, 3128, cfg.Network.PxProxyPort)
-	assert.Equal(t, "1.2.3.4", cfg.Dns.PrivateServer)
+	assert.Equal(t, "1.2.3.4", cfg.Dns.InternalServer)
 	assert.Equal(t, "8.8.8.8", cfg.Dns.PublicServer)
 }
 
 func TestDefaults(t *testing.T) {
 	var exampleConfig = `
 [dns]
-private_server = "1.2.3.4"
+internal_server = "1.2.3.4"
 `
 
 	cfg := FromByteBuffer(bytes.NewBufferString(exampleConfig), validLogLevels)
 	assert.Contains(t, cfg.General.InternetAccessTestUrl, "https://")
 	assert.NotEmpty(t, cfg.General.LogLevel)
 	assert.NotEmpty(t, cfg.Network.PxProxyPort)
-	assert.NotEmpty(t, cfg.Dns.PrivateServer)
+	assert.NotEmpty(t, cfg.Dns.InternalServer)
 	assert.NotEmpty(t, cfg.Dns.PublicServer)
 }
 
@@ -56,7 +56,7 @@ func TestSubnetSplitting(t *testing.T) {
 wsl_to_windows_subnet = "169.254.254.0/24"
 
 [dns]
-private_server = "1.2.3.4"
+internal_server = "1.2.3.4"
 `
 
 	cfg := FromByteBuffer(bytes.NewBufferString(exampleConfig), validLogLevels)
@@ -71,7 +71,7 @@ func TestSubnetConfigWithIpStillWorks(t *testing.T) {
 wsl_to_windows_subnet = "169.254.254.5/24"
 
 [dns]
-private_server = "1.2.3.4"
+internal_server = "1.2.3.4"
 `
 
 	cfg := FromByteBuffer(bytes.NewBufferString(exampleConfig), validLogLevels)
@@ -88,7 +88,7 @@ func TestFromConfigFile(t *testing.T) {
 	assert.Equal(t, "info", cfg.General.LogLevel)
 	assert.Equal(t, "169.254.254.0/24", cfg.Network.WslToWindowsSubnet)
 	assert.Equal(t, 3128, cfg.Network.PxProxyPort)
-	assert.Equal(t, "1.2.3.4", cfg.Dns.PrivateServer)
+	assert.Equal(t, "1.2.3.4", cfg.Dns.InternalServer)
 	assert.Equal(t, "8.8.8.8", cfg.Dns.PublicServer)
 }
 
@@ -99,7 +99,7 @@ wsl_to_windows_subnet = "1.1.1.0/24"
 px_proxy_port = 3128
 
 [dns]
-private_server = "1.2.3.4"
+internal_server = "1.2.3.4"
 `
 
 	cfg := FromByteBuffer(bytes.NewBufferString(exampleConfig), validLogLevels)
@@ -113,13 +113,13 @@ private_server = "1.2.3.4"
 func TestFromConfigEnvironmentVariableAndConfigFile(t *testing.T) {
 	t.Skip("Skipped as not implemented yet")
 	configFileDir := getTestConfigFileDir()
-	os.Setenv("ISETTA_DNS_PRIVATE_DNS_SERVER", "42.42.42.42")
+	os.Setenv("ISETTA_DNS_INTERNAL_DNS_SERVER", "42.42.42.42")
 
 	cfg := FromConfigFile(configFileDir, validLogLevels)
 	// set via config file
 	assert.Equal(t, "info", cfg.General.LogLevel)
 	// set via env var
-	assert.Equal(t, "42.42.42.42", cfg.Dns.PrivateServer)
+	assert.Equal(t, "42.42.42.42", cfg.Dns.InternalServer)
 }
 
 func getTestConfigFileDir() string {

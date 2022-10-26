@@ -1,6 +1,5 @@
 Fix/ Investigate
 =================
-- naming: private_dns_server -> cooperate_dns_server ?
 
 Implement
 =========

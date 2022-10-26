@@ -19,15 +19,15 @@ func setupHandler(t *testing.T) {
 	mockDirectAccess = mocks.NewNetworkConfigurer(t)
 	mockViaProxy = mocks.NewNetworkConfigurer(t)
 
-	handler = Handler {
-		RunningAsRoot: true,
-		WindowsChecker: mockWinChecker,
-		DnsConfigurer: mockDnsConfigurer,
-		EnvVarPrinter: mockEnvVarPrinter,
-		PrivateDnsServer: "42.42.42.42",
-		PublicDnsServer: "8.8.8.8",
-		DirectAccess: mockDirectAccess,
-		ViaProxy: mockViaProxy,
+	handler = Handler{
+		RunningAsRoot:     true,
+		WindowsChecker:    mockWinChecker,
+		DnsConfigurer:     mockDnsConfigurer,
+		EnvVarPrinter:     mockEnvVarPrinter,
+		InternalDnsServer: "42.42.42.42",
+		PublicDnsServer:   "8.8.8.8",
+		DirectAccess:      mockDirectAccess,
+		ViaProxy:          mockViaProxy,
 	}
 }
 
@@ -69,17 +69,17 @@ func TestPerformsConfigViaProxyWhenPublicDnsIsReachable(t *testing.T) {
 	assert.NoError(t, handler.ConfigureNetwork())
 }
 
-func TestWhenPrivateDnsIsReachableExportStatementsArePrinted(t *testing.T) {	
+func TestWhenInternalDnsIsReachableExportStatementsArePrinted(t *testing.T) {
 	setupHandler(t)
 	mockWinChecker.On("IsPingable", "42.42.42.42").Return(true)
 	mockEnvVarPrinter.On("PrintExportCommands")
 	handler.PrintEnvVars()
 }
 
-func TestWhenPublicDnsIsReachableUnsetStatementsArePrinted(t *testing.T) {	
+func TestWhenPublicDnsIsReachableUnsetStatementsArePrinted(t *testing.T) {
 	setupHandler(t)
 	mockWinChecker.
-		// private DNS not reachable
+		// internal DNS not reachable
 		On("IsPingable", "42.42.42.42").Return(false).
 		// public DNS reachable
 		On("IsPingable", "8.8.8.8").Return(true)
