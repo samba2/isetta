@@ -7,11 +7,14 @@ import (
 	log "org.samba/isetta/simplelogger"
 )
 
-const exportEnvironmentVariables = `
+const exportHttpProxyVariables = `
 export HTTPS_PROXY=http://%[1]v:%[2]v
 export HTTP_PROXY=http://%[1]v:%[2]v
 export https_proxy=http://%[1]v:%[2]v
 export http_proxy=http://%[1]v:%[2]v
+`
+
+const exportNoProxyVariable = `
 export NO_PROXY=localhost,127.0.0.1,%[1]v
 `
 
@@ -33,8 +36,21 @@ func (c *ConsoleEnvVarPrinter) PrintExportCommands() {
 }
 
 func (c *ConsoleEnvVarPrinter) buildPrintExportCommands() string {
-	trimmed := strings.Trim(exportEnvironmentVariables, "\n") 
-	return fmt.Sprintf(trimmed, c.WindowsIp, c.PxProxyPort)
+	trimmedHttpVars := strings.Trim(exportHttpProxyVariables, "\n")
+	httpVars := fmt.Sprintf(trimmedHttpVars, c.WindowsIp, c.PxProxyPort)
+	
+	trimmedNoProxyVar := strings.Trim(exportNoProxyVariable, "\n") 
+	noProxyVar := fmt.Sprintf(trimmedNoProxyVar, c.WindowsIp)
+	appendNoProxyEnvVar(&noProxyVar)
+	
+	return fmt.Sprintf("%v\n%v", httpVars, noProxyVar)
+}
+
+func appendNoProxyEnvVar(noProxyVar *string) {
+	noProxyFromEnv := os.Getenv("NO_PROXY")
+	if noProxyFromEnv != "" {
+		*noProxyVar = fmt.Sprintf("%v,%v", *noProxyVar, noProxyFromEnv)
+	}
 }
 
 func (c *ConsoleEnvVarPrinter) PrintUnsetCommands() {
