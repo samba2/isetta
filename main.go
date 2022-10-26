@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 
 	"org.samba/isetta/adapter/dnsconfig"
@@ -16,9 +17,17 @@ import (
 	log "org.samba/isetta/simplelogger"
 )
 
+const version = "0.5.1"
+
 func main() {
 	envSettings := flag.Bool("env-settings", false, "Prints environment config. Handy if called via 'source'")
+	printVersion := flag.Bool("version", false, "Print isetta version")
 	flag.Parse()
+
+	if *printVersion {
+		fmt.Printf("Isetta version %v\n", version)
+		os.Exit(0)
+	}
 
 	conf := config.FromConfigFile("$HOME", log.GetValidLogLevels())
 	log.Logger.CurrentLogLevel = log.Levels[conf.General.LogLevel]
