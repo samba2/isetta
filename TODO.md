@@ -1,11 +1,9 @@
 Fix/ Investigate
 =================
-license and author info
+- license and author info
 
 Implement
 =========
-- version number
-- configure additional NO_PROXY entries
 - default user, powered by new `gsudo` version
 
 One Day
