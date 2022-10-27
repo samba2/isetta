@@ -21,6 +21,10 @@ log_level = "trace"
 [network]
 wsl_to_windows_subnet = "169.254.254.0/24"
 px_proxy_port = 3128
+no_proxy = [
+    "foo",
+    "bar"
+]
 
 [dns]
 internal_server = "1.2.3.4"
@@ -34,6 +38,8 @@ public_server    = "8.8.8.8"
 	assert.Equal(t, 3128, cfg.Network.PxProxyPort)
 	assert.Equal(t, "1.2.3.4", cfg.Dns.InternalServer)
 	assert.Equal(t, "8.8.8.8", cfg.Dns.PublicServer)
+	assert.Equal(t, "foo", cfg.Network.NoProxy[0])
+	assert.Equal(t, "bar", cfg.Network.NoProxy[1])
 }
 
 func TestDefaults(t *testing.T) {

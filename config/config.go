@@ -34,6 +34,7 @@ type Network struct {
 	WslToWindowsSubnet string `mapstructure:"wsl_to_windows_subnet" validate:"cidrv4"`
 	PxProxyPort        int    `mapstructure:"px_proxy_port" validate:"min=1,max=65535"`
 	P2p                P2p
+	NoProxy   []string `mapstructure:"no_proxy"`
 }
 
 type P2p struct {

@@ -101,8 +101,6 @@ export http_proxy=http://169.254.254.1:3128
 export NO_PROXY=localhost,127.0.0.1,169.254.254.1
 ````
 
-Note: An existing `NO_PROXY` environment variable is detected. It's content is appended to the `export NO_PROXY` line.
-
 Output with direct internet connection (unset all proxy variables):
 ````sh
 unset HTTPS_PROXY
@@ -168,6 +166,15 @@ This config change is helpful if your copy of `isetta` is living in your own pri
 For more background, read on [here](https://unixhealthcheck.com/blog?id=363).
 
 
+## Additional NO_PROXY Configuration
+
+`isetta` detects existing `NO_PROXY` configurations at two locations:
+1. an existing `NO_PROXY` environment variable
+2. a list of hosts in the *network/no_proxy* section of the `.isetta` config file. See [here](./example-isetta.toml) for an example.
+
+Entries of both locations will be appended to the `export NO_PROXY` line when running `isetta -env-settings`.
+
+
 ## Networking Overview
 
 As already mentioned, `isetta` was tested in these WSL2 networking scenarios:
@@ -176,6 +183,7 @@ As already mentioned, `isetta` was tested in these WSL2 networking scenarios:
 - directly connected
 
 The first two scenarios require the same setup effort. The direct connection scenario is supported to also switch back from a cooperate network connection.
+
 
 ### Connected To Cooperate Network
 

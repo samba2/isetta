@@ -45,6 +45,7 @@ func setupDependencies(conf config.Config) core.Handler {
 	envVarprinter := envvars.ConsoleEnvVarPrinter{
 		WindowsIp:   conf.Network.P2p.WindowsIp,
 		PxProxyPort: conf.Network.PxProxyPort,
+		NoProxy: conf.Network.NoProxy,
 	}
 
 	windowsChecker := windows.WindowsCheckerImpl{PxProxyPort: conf.Network.PxProxyPort}

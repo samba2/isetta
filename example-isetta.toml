@@ -21,6 +21,13 @@ wsl_to_windows_subnet = "169.254.254.0/24"
 # optional, default: 3128
 px_proxy_port = 3128
 
+# list of additional entries for the NO_PROXY environment variable. 
+# printed when started with "-env-settings"
+no_proxy = [
+    "some.internal.server",
+    "someother.internal.server"
+]
+
 [dns]
 # your cooperate/ interal DNS server
 # mandatory
