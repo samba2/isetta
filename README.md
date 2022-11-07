@@ -30,7 +30,7 @@ $ curl www.google.com
 
 ## Install
 
-`isetta` comes as single binary which which should be copied to a directory inside your `PATH`. 
+`isetta` comes as a single binary which should be copied to a directory inside your `PATH`. 
 
 I suggest to have your own local `/home/your-username/bin` directory which is added to the `PATH` environment variable, either in `.bashrc` (bash) or `.zshrc` (zsh)
 
@@ -86,7 +86,7 @@ To perform the network configuration (main use case), run:
 $ sudo isetta
 ```
 
-Additional, `isetta` also prints out the correct `HTTPS_PROXY` variables:
+Additionaly, `isetta` also prints out the correct `HTTPS_PROXY` variables:
 
 ```sh
 $ isetta -env-settings
