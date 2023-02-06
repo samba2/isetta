@@ -165,6 +165,21 @@ This config change is helpful if your copy of `isetta` is living in your own pri
 
 For more background, read on [here](https://unixhealthcheck.com/blog?id=363).
 
+You can access the sudo config file by running `sudo visudo`
+
+### Other Visudo Setups
+
+Depending your environment, you may need to add the following to your sudo config. 
+
+1. Add the following to the `secure_path` variable
+```
+:/home/<user>/bin:/mnt/c/Windows/system32:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/
+```
+
+2. Add the `env_keep` variable line as:
+```
+Defaults        env_keep += "PATH"
+```
 
 ## Additional NO_PROXY Configuration
 
