@@ -30,16 +30,23 @@ func (w *WindowsCheckerImpl) IsPxProxyRunning() bool {
 
 func (WindowsCheckerImpl) IsRunningOnWsl2() bool {
 	log.Logger.Trace("Checking if running inside WSL 2")
-	resultUtf16 := runInPowerShell("wsl.exe --status")
+	resultUtf16 := runInPowerShell("wsl.exe --list --verbose")
 
 	decoder := unicode.UTF16(unicode.LittleEndian, unicode.IgnoreBOM).NewDecoder()
 	result, err := decoder.String(string(resultUtf16))
 	helper.AssertNoError(err, "Error decoding cmd output")
 
-	// this is a clumpsy attempt to find the string ": 2" in the output
-	match, err := regexp.MatchString(": 2\\s+", result)
-	helper.AssertNoError(err, "Error executing regex")
+	return parseListOutput(result)
+}
 
+func parseListOutput(output string) bool {
+	// this is a clumpsy attempt to find the string ": 2" in the output
+	// (?m) is for multiline match
+	// example:
+	// * Ubuntu    Running         2 
+	versionRegexLine := "(?m)^* .+ 2\\s*$"
+	match, err := regexp.MatchString(versionRegexLine, output)
+	helper.AssertNoError(err, "Error executing regex")
 	return match
 }
 

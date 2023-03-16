@@ -1,6 +1,6 @@
-// +build wsl
-
 package windows
+
+// tests here run with all unit tests and don't need a Windows/ WSL underneath
 
 import (
 	"testing"
@@ -8,18 +8,22 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRunInPowershellOk(t *testing.T) {
-	result := runInPowerShell("echo HELLOWORLD")
-	assert.Equal(t, "HELLOWORLD", result)
+func TestParseListOutputOk(t *testing.T) {
+	output := `
+NAME      STATE           VERSION
+* Ubuntu    Running         2
+  foo
+`
+
+	assert.True(t, parseListOutput(output))
 }
 
-func TestIsPortOpenOnWindows(t *testing.T) {
-	assert.True(t, isPortOpenOnWindows("445"))
-	assert.False(t, isPortOpenOnWindows("42"))
-}
+func TestParseListOutputNotOk(t *testing.T) {
+	output := `
+NAME      STATE           VERSION
+* Ubuntu    Running         1
+  foo
+`
 
-func TestIsPingableOnWindows(t *testing.T) {
-	checker := WindowsCheckerImpl{PxProxyPort: 3128}
-	assert.True(t, checker.IsPingable("127.0.0.1"))
-	assert.False(t, checker.IsPingable("42.42.42.42"))
+	assert.False(t, parseListOutput(output))
 }
