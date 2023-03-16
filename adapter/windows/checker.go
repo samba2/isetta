@@ -39,11 +39,11 @@ func (WindowsCheckerImpl) IsRunningOnWsl2() bool {
 	return parseListOutput(result)
 }
 
+// find the WSL2 version in the output
+// (?m) is for multiline match
+// example:
+// * Ubuntu    Running         2 
 func parseListOutput(output string) bool {
-	// this is a clumpsy attempt to find the string ": 2" in the output
-	// (?m) is for multiline match
-	// example:
-	// * Ubuntu    Running         2 
 	versionRegexLine := "(?m)^* .+ 2\\s*$"
 	match, err := regexp.MatchString(versionRegexLine, output)
 	helper.AssertNoError(err, "Error executing regex")
