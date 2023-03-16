@@ -66,6 +66,6 @@ func (h *Handler) checkRunningOnWsl() error {
 		log.Logger.Debug("Running on WSL2")
 		return nil
 	} else {
-		return errors.New("did not detect required WSL version 2")
+		return errors.New("isetta requires WSL2 but this Linux environment is running in something else. Run 'wsl.exe --list --verbose' for details")
 	}
 }
