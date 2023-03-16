@@ -15,9 +15,7 @@ export https_proxy=http://%[1]v:%[2]v
 export http_proxy=http://%[1]v:%[2]v
 `
 
-const exportNoProxyVariable = `
-export NO_PROXY=localhost,127.0.0.1,%[1]v
-`
+const defaultNoProxyHosts = "localhost,127.0.0.1"
 
 const unsetEnvironmentVariables = `
 unset HTTPS_PROXY
@@ -25,6 +23,7 @@ unset HTTP_PROXY
 unset https_proxy
 unset http_proxy
 unset NO_PROXY
+unset no_proxy
 `
 
 type ConsoleEnvVarPrinter struct{
@@ -41,26 +40,33 @@ func (c *ConsoleEnvVarPrinter) buildPrintExportCommands() string {
 	trimmedHttpVars := strings.Trim(exportHttpProxyVariables, "\n")
 	httpVars := fmt.Sprintf(trimmedHttpVars, c.WindowsIp, c.PxProxyPort)
 	
-	trimmedNoProxyVar := strings.Trim(exportNoProxyVariable, "\n") 
-	noProxyVar := fmt.Sprintf(trimmedNoProxyVar, c.WindowsIp)
-	c.appendNoProxyEnvVar(&noProxyVar)
-	c.appendNoProxyConfig(&noProxyVar)
-	
-	return fmt.Sprintf("%v\n%v", httpVars, noProxyVar)
+	upperNoProxyVar := c.buildNoProxyEnvVar("NO_PROXY")
+	lowerNoProxyVar := c.buildNoProxyEnvVar("no_proxy")
+
+	return fmt.Sprintf("%v\n%v\n%v", httpVars, upperNoProxyVar, lowerNoProxyVar)
 }
 
-func (c *ConsoleEnvVarPrinter) appendNoProxyEnvVar(noProxyVar *string) {
-	noProxyFromEnv := os.Getenv("NO_PROXY")
-	if noProxyFromEnv != "" {
-		*noProxyVar = fmt.Sprintf("%v,%v", *noProxyVar, noProxyFromEnv)
+func (c *ConsoleEnvVarPrinter) buildNoProxyEnvVar(envVarName string) string {
+	out := fmt.Sprintf("export %v=%v,%v", envVarName, defaultNoProxyHosts, c.WindowsIp)
+	out += appendEnvVarIfSet(envVarName)
+	out += c.appendNoProxyConfigIfSet(envVarName)
+	return out
+}
+
+func appendEnvVarIfSet(key string) string {
+	value := os.Getenv(key)
+	if value != "" {
+		return fmt.Sprintf(",%v", value)
 	}
+	return ""
 }
 
-func (c *ConsoleEnvVarPrinter) appendNoProxyConfig(noProxyVar *string) {
+func (c *ConsoleEnvVarPrinter) appendNoProxyConfigIfSet(envVarName string) string {
 	if len(c.NoProxy) > 0 {
 		noProxyList := strings.Join(c.NoProxy, ",")
-		*noProxyVar = fmt.Sprintf("%v,%v", *noProxyVar, noProxyList)
+		return fmt.Sprintf(",%v", noProxyList)
 	}
+	return ""
 }
 
 func (c *ConsoleEnvVarPrinter) PrintUnsetCommands() {
