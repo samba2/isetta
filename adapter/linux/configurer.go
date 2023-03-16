@@ -35,9 +35,9 @@ func getCidrNotation(ip string, subnetMask string) string {
 }
 
 func getBroadcast(ip string, subnetMask string) string {
-	cidr2, err := cidr.ParseCIDR(getCidrNotation(ip, subnetMask))
+	cidr2, err := cidr.Parse(getCidrNotation(ip, subnetMask))
 	helper.AssertNoError2(err)
-	return cidr2.Broadcast()
+	return cidr2.Broadcast().String()
 }
 
 

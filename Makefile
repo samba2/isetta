@@ -1,4 +1,4 @@
-MOCKERY_RELEASE=https://github.com/vektra/mockery/releases/download/v2.14.0/mockery_2.14.0_Linux_x86_64.tar.gz
+MOCKERY_RELEASE=https://github.com/vektra/mockery/releases/download/v2.22.1/mockery_2.22.1_Linux_x86_64.tar.gz
 
 tmp/mockery:
 	mkdir -p tmp/

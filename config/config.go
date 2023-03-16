@@ -106,13 +106,13 @@ func unmarshalConfig() Config {
 
 func determineP2pAddresses(conf *Config) error {
 	subnet := parseCidr(conf.Network.WslToWindowsSubnet)
-	conf.Network.P2p.SubnetMask = subnet.Mask()
+	conf.Network.P2p.SubnetMask = subnet.Mask().String()
 	conf.Network.P2p.WindowsIp, conf.Network.P2p.LinuxIp = determineFirstTwoIps(subnet)
 	return nil
 }
 
 func parseCidr(subnet string) *cidr.CIDR {
-	c, err := cidr.ParseCIDR(subnet)
+	c, err := cidr.Parse(subnet)
 	helper.AssertNoError(err, "error parsing wsl_to_windows_subnet %v.", subnet)
 	return c
 }
@@ -124,14 +124,15 @@ func determineFirstTwoIps(subnet *cidr.CIDR) (string, string) {
 	cnt := 0
 	// iterate all IPs in subnet
 	// skip 1st (network address)
-	subnet.ForEachIP(func(ip string) error {
+
+	subnet.Each(func(ip string) bool {
 		if cnt == 1 {
 			firstIp = ip
 		} else if cnt == 2 {
 			secondIp = ip
 		}
 		cnt++
-		return nil
+		return true
 	})
 	return firstIp, secondIp
 }

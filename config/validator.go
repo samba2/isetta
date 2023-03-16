@@ -87,7 +87,7 @@ func (v MyValidator) validateLogLevel() error {
 }
 
 func (v MyValidator) validateSubnetSize() error {
-	subnet, err := cidr.ParseCIDR(v.Config.Network.WslToWindowsSubnet)
+	subnet, err := cidr.Parse(v.Config.Network.WslToWindowsSubnet)
 	if err != nil {
 		return err
 	}
