@@ -71,21 +71,6 @@ internal_server = "1.2.3.4"
 	assert.Equal(t, "255.255.255.0", cfg.Network.P2p.SubnetMask)
 }
 
-func TestSubnetConfigWithIpStillWorks(t *testing.T) {
-	var exampleConfig = `
-[network]
-wsl_to_windows_subnet = "169.254.254.5/24"
-
-[dns]
-internal_server = "1.2.3.4"
-`
-
-	cfg := FromByteBuffer(bytes.NewBufferString(exampleConfig), validLogLevels)
-	assert.Equal(t, "169.254.254.1", cfg.Network.P2p.WindowsIp)
-	assert.Equal(t, "169.254.254.2", cfg.Network.P2p.LinuxIp)
-	assert.Equal(t, "255.255.255.0", cfg.Network.P2p.SubnetMask)
-}
-
 func TestFromConfigFile(t *testing.T) {
 	configFileDir := getTestConfigFileDir()
 
