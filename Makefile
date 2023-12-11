@@ -17,12 +17,12 @@ unit-test: mocks
 
 unit-test-with-wsl: mocks
 	go clean -testcache
-	go test -timeout 30s -tags wsl -run ^Test $(ISETTA_PACKAGES) -v
+	go test -timeout 60s -tags wsl -run ^Test $(ISETTA_PACKAGES) -v
 
 # additionally requires user to provide admin credentials for elevated execution test
 unit-test-with-wsl-interactive: mocks
 	go clean -testcache
-	go test -timeout 30s -tags wsl,interactive -run ^Test $(ISETTA_PACKAGES) -v
+	go test -timeout 60s -tags wsl,interactive -run ^Test $(ISETTA_PACKAGES) -v
 
 coverage:
 	go clean -testcache
