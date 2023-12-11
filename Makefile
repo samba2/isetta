@@ -13,7 +13,7 @@ test: unit-test architecture-test
 ISETTA_PACKAGES=$(shell go list org.samba/isetta/... | egrep -v 'mocks|org.samba.isetta$$')
 unit-test: mocks
 	go clean -testcache
-	go test -timeout 30s -run ^Test $(ISETTA_PACKAGES) -v
+	go test -timeout 30s -run ^Test $(ISETTA_PACKAGES) -v -coverprofile tmp/coverage.out
 
 unit-test-with-wsl: mocks
 	go clean -testcache
@@ -24,14 +24,14 @@ unit-test-with-wsl-interactive: mocks
 	go clean -testcache
 	go test -timeout 60s -tags wsl,interactive -run ^Test $(ISETTA_PACKAGES) -v
 
-coverage:
+coverage: mocks
 	go clean -testcache
-	go test -timeout 30s -run ^Test ./... -coverpkg=$(ISETTA_PACKAGES) -coverprofile tmp/coverage.out
+	go test -timeout 30s -run ^Test $(ISETTA_PACKAGES) -v -coverprofile=tmp/coverage.out
 	go tool cover -func tmp/coverage.out
 
-coverage-with-wsl-interactive:
+coverage-with-wsl-interactive: mocks
 	go clean -testcache
-	go test -timeout 30s  -tags wsl,interactive -run ^Test ./... -coverpkg=$(ISETTA_PACKAGES) -coverprofile tmp/coverage.out
+	go test -timeout 60s -tags wsl,interactive -run ^Test $(ISETTA_PACKAGES) -v -coverprofile=tmp/coverage.out
 	go tool cover -func tmp/coverage.out
 
 ARCH_GO=~/go/bin/arch-go
