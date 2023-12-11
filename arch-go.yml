@@ -1,9 +1,14 @@
+version: 1
+threshold:
+  coverage: 40
 dependenciesRules:
   # core has no dependencies to "the outside"
-  - package: "core"
-    shouldOnlyDependsOn:
-      - "**.simplelogger"
-  # adapters should be independent of each other
-  - package: "**.adapter.**"
-    shouldNotDependsOn:
-      - "**.adapter.**"
+- package: core
+  shouldOnlyDependsOn:
+    internal:
+    - '**.simplelogger'
+  # adapters should be independent of each other    
+- package: '**.adapter.**'
+  shouldNotDependsOn:
+    internal:
+    - '**.adapter.**'
