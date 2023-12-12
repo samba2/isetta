@@ -7,41 +7,41 @@ import (
 	"org.samba/isetta/mocks"
 )
 
-var internetChecker InternetCheckerImpl
+var internetChecker InternetChecker
 
 func setupInternetChecker(t *testing.T) {
 	mockHttpChecker = mocks.NewHttpChecker(t)
 
-	internetChecker = InternetCheckerImpl{
-		HttpChecker: mockHttpChecker,
+	internetChecker = InternetChecker{
+		HttpChecker:           mockHttpChecker,
 		TimeoutInMilliseconds: 100,
 	}
 }
 
 func TestInternetChecker(t *testing.T) {
 	testCases := []struct {
-		desc	string
-		hasDirectInternetAccess bool
+		desc                      string
+		hasDirectInternetAccess   bool
 		hasInternetAccessViaProxy bool
-		hasInternetAccess bool
+		hasInternetAccess         bool
 	}{
 		{
-			desc: "has access via direct connection",
-			hasDirectInternetAccess: true,
+			desc:                      "has access via direct connection",
+			hasDirectInternetAccess:   true,
 			hasInternetAccessViaProxy: false,
-			hasInternetAccess: true,
+			hasInternetAccess:         true,
 		},
 		{
-			desc: "has access via proxy connection",
-			hasDirectInternetAccess: false,
+			desc:                      "has access via proxy connection",
+			hasDirectInternetAccess:   false,
 			hasInternetAccessViaProxy: true,
-			hasInternetAccess: true,
+			hasInternetAccess:         true,
 		},
 		{
-			desc: "has not access",
-			hasDirectInternetAccess: false,
+			desc:                      "has not access",
+			hasDirectInternetAccess:   false,
 			hasInternetAccessViaProxy: false,
-			hasInternetAccess: false,
+			hasInternetAccess:         false,
 		},
 	}
 	for _, tC := range testCases {
