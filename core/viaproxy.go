@@ -122,7 +122,10 @@ func (p *ViaProxy) configureWindowsSide() error {
 		return err
 	}
 
-	err = p.WindowsConfigurer.SetPortProxy(p.HttpChecker.HasInternetAccessViaProxy)
+	err = p.WindowsConfigurer.SetPortProxy(func() bool {
+        return p.HttpChecker.HasInternetAccessViaProxy()
+    })
+
 	if err != nil {
 		return err
 	}

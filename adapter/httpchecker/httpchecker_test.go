@@ -18,14 +18,14 @@ func TestDirectInternetAccess(t *testing.T) {
 
 	httpChecker, err := New(ts.URL, "")
 	assert.NoError(t, err)
-	httpChecker.TimeoutInMilliseconds = 100
+	httpChecker.DefaultTimeoutInMilliseconds = 100
 	assert.True(t, httpChecker.HasDirectInternetAccess())
 }
 
 func TestExitOnWrongAddress(t *testing.T) {
 	httpChecker, err := New("http://non-existing", "")
 	assert.NoError(t, err)
-	httpChecker.TimeoutInMilliseconds = 100
+	httpChecker.DefaultTimeoutInMilliseconds = 100
 	assert.False(t, httpChecker.HasDirectInternetAccess())
 }
 
@@ -43,7 +43,7 @@ func TestInternetAccessViaProxy(t *testing.T) {
 	// act
 	httpChecker, err := New(ts.URL, proxy.URL)
 	assert.NoError(t, err)
-	httpChecker.TimeoutInMilliseconds = 100
+	httpChecker.DefaultTimeoutInMilliseconds = 100
 
 	// assert
 	assert.True(t, httpChecker.HasInternetAccessViaProxy())
@@ -52,7 +52,7 @@ func TestInternetAccessViaProxy(t *testing.T) {
 func TestInternetAccessViaProxyFailed(t *testing.T) {
 	httpChecker, err := New("http://foo", "http://127.0.0.1:1")
 	assert.NoError(t, err)
-	httpChecker.TimeoutInMilliseconds = 100
+	httpChecker.DefaultTimeoutInMilliseconds = 100
 
 	assert.False(t, httpChecker.HasInternetAccessViaProxy())
 }

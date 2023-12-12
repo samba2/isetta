@@ -39,8 +39,8 @@ type WindowsConfigurer interface {
 }
 
 type HttpChecker interface {
-	HasDirectInternetAccess() bool
-	HasInternetAccessViaProxy() bool
+	HasDirectInternetAccess(timeoutInMilliseconds ...int) bool
+	HasInternetAccessViaProxy(timeoutInMilliseconds ...int) bool
 	IsPxProxyReachable() bool
 }
 

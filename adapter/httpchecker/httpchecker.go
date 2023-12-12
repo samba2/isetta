@@ -10,9 +10,9 @@ import (
 )
 
 type HttpCheckerImpl struct {
-	InternetAccessTestUrl string
-	ProxyUrl              *url.URL
-	TimeoutInMilliseconds int
+	InternetAccessTestUrl        string
+	ProxyUrl                     *url.URL
+	DefaultTimeoutInMilliseconds int
 }
 
 func New(InternetAccessTestUrl string, proxyUrl string) (HttpCheckerImpl, error) {
@@ -21,18 +21,19 @@ func New(InternetAccessTestUrl string, proxyUrl string) (HttpCheckerImpl, error)
 		return HttpCheckerImpl{}, err
 	}
 	return HttpCheckerImpl{
-		InternetAccessTestUrl: InternetAccessTestUrl,
-		ProxyUrl:              proxyUrl2,
-		TimeoutInMilliseconds: 5000,
+		InternetAccessTestUrl:        InternetAccessTestUrl,
+		ProxyUrl:                     proxyUrl2,
+		DefaultTimeoutInMilliseconds: 5000,
 	}, nil
 }
 
-func (h *HttpCheckerImpl) HasDirectInternetAccess() bool {
+func (h *HttpCheckerImpl) HasDirectInternetAccess(timeoutInMilliseconds ...int) bool {
 	os.Unsetenv("https_proxy")
 	os.Unsetenv("HTTPS_PROXY")
 
+	timeout := determineTimeout(timeoutInMilliseconds, h.DefaultTimeoutInMilliseconds)
 	client := http.Client{
-		Timeout: time.Duration(h.TimeoutInMilliseconds) * time.Millisecond,
+		Timeout: time.Duration(timeout) * time.Millisecond,
 	}
 
 	resp, err := client.Get(h.InternetAccessTestUrl)
@@ -44,10 +45,11 @@ func (h *HttpCheckerImpl) HasDirectInternetAccess() bool {
 	return resp.StatusCode == 200
 }
 
-func (h *HttpCheckerImpl) HasInternetAccessViaProxy() bool {
+func (h *HttpCheckerImpl) HasInternetAccessViaProxy(timeoutInMilliseconds ...int) bool {
+	timeout := determineTimeout(timeoutInMilliseconds, h.DefaultTimeoutInMilliseconds)
 	httpClientWithProxy := http.Client{
 		Transport: &http.Transport{Proxy: http.ProxyURL(h.ProxyUrl)},
-		Timeout:   time.Duration(h.TimeoutInMilliseconds) * time.Millisecond,
+		Timeout:   time.Duration(timeout) * time.Millisecond,
 	}
 	resp, err := httpClientWithProxy.Get(h.InternetAccessTestUrl)
 
@@ -65,9 +67,17 @@ func (h *HttpCheckerImpl) HasInternetAccessViaProxy() bool {
 	}
 }
 
+func determineTimeout(timeoutInMilliseconds []int, defaultTimeoutInMilliseconds int) int {
+	if len(timeoutInMilliseconds) > 0 {
+		return timeoutInMilliseconds[0]
+	} else {
+		return defaultTimeoutInMilliseconds
+	}
+}
+
 func (h *HttpCheckerImpl) IsPxProxyReachable() bool {
 	client := http.Client{
-		Timeout: time.Duration(h.TimeoutInMilliseconds) * time.Millisecond,
+		Timeout: time.Duration(h.DefaultTimeoutInMilliseconds) * time.Millisecond,
 	}
 
 	_, err := client.Get(h.ProxyUrl.String())
