@@ -62,7 +62,7 @@ func isPortOpenOnWindows(port string) bool {
 
 func runInPowerShell(command string) string {
 	log.Logger.Trace("Running in Powershell: %v", command)
-	result, err := exec.Command("powershell.exe", "-Command", command).CombinedOutput()
+	result, err := exec.Command("powershell.exe", "-NoProfile", "-Command", command).CombinedOutput()
 	helper.AssertNoError(err, "Error executing Powershell command: %v", command)
 
 	return strings.TrimSuffix(string(result), "\r\n")
