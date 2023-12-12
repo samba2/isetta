@@ -1,10 +1,35 @@
 package core
 
-type InternetChecker struct {
-	HttpChecker HttpChecker
+import "sync"
+
+type InternetChecker interface {
+	HasInternetAccess() bool
 }
 
-func (c *InternetChecker) HasInternetAccess() bool {
+type InternetCheckerImpl struct {
+	HttpChecker           HttpChecker
+	TimeoutInMilliseconds int
+}
+
+func (c *InternetCheckerImpl) HasInternetAccess() bool {
+	var wg sync.WaitGroup
 	
-	return c.HttpChecker.HasDirectInternetAccess() || c.HttpChecker.HasInternetAccessViaProxy()
+	ch := make(chan bool, 2)
+	wg.Add(2)
+
+	go func() {
+		defer wg.Done()
+		ch <- c.HttpChecker.HasDirectInternetAccess(c.TimeoutInMilliseconds)
+	}()
+
+	go func() {
+		defer wg.Done()
+		ch <- c.HttpChecker.HasInternetAccessViaProxy(c.TimeoutInMilliseconds)
+	}()
+
+	wg.Wait()
+	close(ch)
+
+	result1, result2 := <-ch, <-ch
+	return result1 || result2
 }
