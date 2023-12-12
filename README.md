@@ -1,4 +1,4 @@
-![Isetta CI Run](https://github.com/samba2/isetta/blob/main/.github/workflows/ci-workflow.yml/badge.svg)
+![Isetta CI Run](https://github.com/samba2/isetta/actions/workflows/ci-workflow.yml/badge.svg)
 
 # Isetta - Painless Cooperate Proxy in WSL2
 
