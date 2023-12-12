@@ -34,7 +34,6 @@ func setupHandler(t *testing.T) {
 			TimeoutInMilliseconds: 100,
 		},
 	}
-
 }
 
 func setupNoInternetConnection() {
@@ -42,20 +41,31 @@ func setupNoInternetConnection() {
 	mockHttpChecker.On("HasInternetAccessViaProxy", 100).Return(false)
 }
 
-func TestErrorWhenNotOnWsl(t *testing.T) {
-	setupHandler(t)
 
-	mockWinChecker.On("IsRunningOnWsl2").Return(false)
-	assert.Error(t, handler.ConfigureNetwork())
-}
 
 func TestShortCircuitIfHttpConnectionAlreadyPossible(t *testing.T) {
 	setupHandler(t)
 	mockHttpChecker.On("HasDirectInternetAccess", 100).Return(true)
 	mockHttpChecker.On("HasInternetAccessViaProxy", 100).Return(false)
-	mockWinChecker.On("IsRunningOnWsl2").Return(true)
 
 	assert.NoError(t, handler.ConfigureNetwork())
+}
+
+
+func TestNetworkConfigRequiresRoot(t *testing.T) {
+	setupHandler(t)
+	setupNoInternetConnection()
+
+	handler.RunningAsRoot = false
+	assert.Error(t, handler.ConfigureNetwork())
+}
+
+func TestErrorWhenNotOnWsl(t *testing.T) {
+	setupHandler(t)
+	setupNoInternetConnection()
+
+	mockWinChecker.On("IsRunningOnWsl2").Return(false)
+	assert.Error(t, handler.ConfigureNetwork())
 }
 
 func TestErrorWhenNoDnsServerIsReached(t *testing.T) {
@@ -94,6 +104,7 @@ func TestPerformsConfigViaProxyWhenPublicDnsIsReachable(t *testing.T) {
 
 func TestWhenInternalDnsIsReachableExportStatementsArePrinted(t *testing.T) {
 	setupHandler(t)
+
 	mockWinChecker.On("IsPingable", "42.42.42.42").Return(true)
 	mockEnvVarPrinter.On("PrintExportCommands")
 	handler.PrintEnvVars()
@@ -101,6 +112,7 @@ func TestWhenInternalDnsIsReachableExportStatementsArePrinted(t *testing.T) {
 
 func TestWhenPublicDnsIsReachableUnsetStatementsArePrinted(t *testing.T) {
 	setupHandler(t)
+	
 	mockWinChecker.
 		// internal DNS not reachable
 		On("IsPingable", "42.42.42.42").Return(false).
@@ -117,10 +129,4 @@ func TestEnvVarsArePrintedIfNonRoot(t *testing.T) {
 	mockWinChecker.On("IsPingable", "42.42.42.42").Return(true)
 	mockEnvVarPrinter.On("PrintExportCommands")
 	handler.PrintEnvVars()
-}
-
-func TestNetworkConfigRequiresRoot(t *testing.T) {
-	setupHandler(t)
-	handler.RunningAsRoot = false
-	assert.Error(t, handler.ConfigureNetwork())
 }
