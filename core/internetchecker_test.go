@@ -18,24 +18,38 @@ func setupInternetChecker(t *testing.T) {
 	}
 }
 
-func TestHasAccessViaDirectConnection(t *testing.T) {
-	setupInternetChecker(t)
-	mockHttpChecker.On("HasDirectInternetAccess", 100).Return(true)
-	mockHttpChecker.On("HasInternetAccessViaProxy", 100).Return(false)
-	assert.True(t, internetChecker.HasInternetAccess())
+func TestInternetChecker(t *testing.T) {
+	testCases := []struct {
+		desc	string
+		hasDirectInternetAccess bool
+		hasInternetAccessViaProxy bool
+		hasInternetAccess bool
+	}{
+		{
+			desc: "has access via direct connection",
+			hasDirectInternetAccess: true,
+			hasInternetAccessViaProxy: false,
+			hasInternetAccess: true,
+		},
+		{
+			desc: "has access via proxy connection",
+			hasDirectInternetAccess: false,
+			hasInternetAccessViaProxy: true,
+			hasInternetAccess: true,
+		},
+		{
+			desc: "has not access",
+			hasDirectInternetAccess: false,
+			hasInternetAccessViaProxy: false,
+			hasInternetAccess: false,
+		},
+	}
+	for _, tC := range testCases {
+		t.Run(tC.desc, func(t *testing.T) {
+			setupInternetChecker(t)
+			mockHttpChecker.On("HasDirectInternetAccess", 100).Return(tC.hasDirectInternetAccess)
+			mockHttpChecker.On("HasInternetAccessViaProxy", 100).Return(tC.hasInternetAccessViaProxy)
+			assert.Equal(t, tC.hasInternetAccess, internetChecker.HasInternetAccess())
+		})
+	}
 }
-
-func TestHasAccessViaProxyConnection(t *testing.T) {
-	setupInternetChecker(t)
-	mockHttpChecker.On("HasDirectInternetAccess", 100).Return(false)
-	mockHttpChecker.On("HasInternetAccessViaProxy", 100).Return(true)
-	assert.True(t, internetChecker.HasInternetAccess())
-}
-
-func TestHasNoAccess(t *testing.T) {
-	setupInternetChecker(t)
-	mockHttpChecker.On("HasDirectInternetAccess", 100).Return(false)
-	mockHttpChecker.On("HasInternetAccessViaProxy", 100).Return(false)
-	assert.False(t, internetChecker.HasInternetAccess())
-}
-
