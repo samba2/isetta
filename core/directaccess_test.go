@@ -56,8 +56,6 @@ func TestConfigureDirectInternetAccessWithDefaultGatewaySetup(t *testing.T) {
 	assert.NoError(t, direct.Configure())
 }
 
-
-
 func TestCheckHasDirectAccess(t *testing.T) {
 	setupDirect(t)
 	mockHttpChecker.On("HasDirectInternetAccess").Return(true)
