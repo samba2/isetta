@@ -7,6 +7,13 @@ type InternetChecker struct {
 	TimeoutInMilliseconds int
 }
 
+func NewInternetChecker(HttpChecker HttpChecker) InternetChecker {
+	return InternetChecker{
+		HttpChecker: HttpChecker,
+		TimeoutInMilliseconds: 1000,
+	}
+}
+
 func (c *InternetChecker) HasInternetAccess() bool {
 	var wg sync.WaitGroup
 

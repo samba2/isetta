@@ -42,7 +42,8 @@ $(ARCH_GO):
 	unset GOPATH && \
 	go install github.com/fdaines/arch-go
 
-tmp/isetta:
+isetta:
+	rm -f tmp/isetta
 	GOOS=linux go build -ldflags="-w -s" -o tmp/isetta . 
 
 clean:

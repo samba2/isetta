@@ -45,7 +45,7 @@ func setupDependencies(conf config.Config) core.Handler {
 	envVarprinter := envvars.ConsoleEnvVarPrinter{
 		WindowsIp:   conf.Network.P2p.WindowsIp,
 		PxProxyPort: conf.Network.PxProxyPort,
-		NoProxy: conf.Network.NoProxy,
+		NoProxy:     conf.Network.NoProxy,
 	}
 
 	windowsChecker := windows.WindowsCheckerImpl{PxProxyPort: conf.Network.PxProxyPort}
@@ -102,6 +102,7 @@ func setupDependencies(conf config.Config) core.Handler {
 		EnvVarPrinter:     &envVarprinter,
 		DirectAccess:      &directAccess,
 		ViaProxy:          &viaproxy,
+		InternetChecker:   core.NewInternetChecker(&httpchecker),
 	}
 
 	return handler

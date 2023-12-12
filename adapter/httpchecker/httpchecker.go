@@ -38,11 +38,18 @@ func (h *HttpCheckerImpl) HasDirectInternetAccess(timeoutInMilliseconds ...int) 
 
 	resp, err := client.Get(h.InternetAccessTestUrl)
 	if err != nil {
-		log.Logger.Warn("Error when trying access %v, error was: %v", h.InternetAccessTestUrl, err)
+		log.Logger.Info("Unable to directly access %v", h.InternetAccessTestUrl)
+		log.Logger.Debug("Error was: %v", err)
 		return false
 	}
 
-	return resp.StatusCode == 200
+	if resp.StatusCode == 200 {
+		log.Logger.Debug("Successfully connected directly to %v", h.InternetAccessTestUrl)
+		return true
+	} else {
+		log.Logger.Debug("HTTP error when trying to directly connect to %v. HTTP status code was: %v", h.InternetAccessTestUrl, resp.StatusCode)
+		return false
+	}
 }
 
 func (h *HttpCheckerImpl) HasInternetAccessViaProxy(timeoutInMilliseconds ...int) bool {
@@ -54,7 +61,8 @@ func (h *HttpCheckerImpl) HasInternetAccessViaProxy(timeoutInMilliseconds ...int
 	resp, err := httpClientWithProxy.Get(h.InternetAccessTestUrl)
 
 	if err != nil {
-		log.Logger.Warn("Error when trying access %v, error was: %v", h.InternetAccessTestUrl, err)
+		log.Logger.Info("Unable to access %v via proxy", h.InternetAccessTestUrl)
+		log.Logger.Debug("Error was: %v", err)
 		return false
 	}
 
@@ -62,7 +70,7 @@ func (h *HttpCheckerImpl) HasInternetAccessViaProxy(timeoutInMilliseconds ...int
 		log.Logger.Debug("Successfully connected to %v via proxy %v", h.InternetAccessTestUrl, h.ProxyUrl)
 		return true
 	} else {
-		log.Logger.Warn("Failed to connected to %v via proxy %v", h.InternetAccessTestUrl, h.ProxyUrl)
+		log.Logger.Debug("HTTP error when connecting to %v via proxy %v. HTTP status code was: %v", h.InternetAccessTestUrl, h.ProxyUrl, resp.StatusCode)
 		return false
 	}
 }
