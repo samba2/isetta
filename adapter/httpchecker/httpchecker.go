@@ -44,7 +44,7 @@ func (h *HttpCheckerImpl) HasDirectInternetAccess(timeoutInMilliseconds ...int) 
 	}
 
 	if resp.StatusCode == 200 {
-		log.Logger.Info("Successfully connected directly to %v", h.InternetAccessTestUrl)
+		log.Logger.Debug("Successfully connected directly to %v", h.InternetAccessTestUrl)
 		return true
 	} else {
 		log.Logger.Debug("HTTP error when trying to directly connect to %v. HTTP status code was: %v", h.InternetAccessTestUrl, resp.StatusCode)
@@ -67,7 +67,7 @@ func (h *HttpCheckerImpl) HasInternetAccessViaProxy(timeoutInMilliseconds ...int
 	}
 
 	if resp.StatusCode == 200 {
-		log.Logger.Info("Successfully connected to %v via proxy %v", h.InternetAccessTestUrl, h.ProxyUrl)
+		log.Logger.Debug("Successfully connected to %v via proxy %v", h.InternetAccessTestUrl, h.ProxyUrl)
 		return true
 	} else {
 		log.Logger.Debug("HTTP error when connecting to %v via proxy %v. HTTP status code was: %v", h.InternetAccessTestUrl, h.ProxyUrl, resp.StatusCode)
