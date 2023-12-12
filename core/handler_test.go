@@ -18,6 +18,7 @@ func setupHandler(t *testing.T) {
 	mockEnvVarPrinter = mocks.NewEnvVarPrinter(t)
 	mockDirectAccess = mocks.NewNetworkConfigurer(t)
 	mockViaProxy = mocks.NewNetworkConfigurer(t)
+	mockHttpChecker = mocks.NewHttpChecker(t)
 
 	handler = Handler{
 		RunningAsRoot:     true,
@@ -28,7 +29,17 @@ func setupHandler(t *testing.T) {
 		PublicDnsServer:   "8.8.8.8",
 		DirectAccess:      mockDirectAccess,
 		ViaProxy:          mockViaProxy,
+		InternetChecker:   InternetChecker{
+			HttpChecker: mockHttpChecker,
+			TimeoutInMilliseconds: 100,
+		},
 	}
+
+}
+
+func setupNoInternetConnection() {
+	mockHttpChecker.On("HasDirectInternetAccess", 100).Return(false)
+	mockHttpChecker.On("HasInternetAccessViaProxy", 100).Return(false)
 }
 
 func TestErrorWhenNotOnWsl(t *testing.T) {
@@ -38,8 +49,18 @@ func TestErrorWhenNotOnWsl(t *testing.T) {
 	assert.Error(t, handler.ConfigureNetwork())
 }
 
+func TestShortCircuitIfHttpConnectionAlreadyPossible(t *testing.T) {
+	setupHandler(t)
+	mockHttpChecker.On("HasDirectInternetAccess", 100).Return(true)
+	mockHttpChecker.On("HasInternetAccessViaProxy", 100).Return(false)
+	mockWinChecker.On("IsRunningOnWsl2").Return(true)
+
+	assert.NoError(t, handler.ConfigureNetwork())
+}
+
 func TestErrorWhenNoDnsServerIsReached(t *testing.T) {
 	setupHandler(t)
+	setupNoInternetConnection()
 
 	mockWinChecker.On("IsRunningOnWsl2").Return(true)
 	mockDnsConfigurer.On("DisableResolveAutoConfGeneration").Return()
@@ -50,6 +71,7 @@ func TestErrorWhenNoDnsServerIsReached(t *testing.T) {
 
 func TestPerformsDirectConfigWhenPublicDnsIsReachable(t *testing.T) {
 	setupHandler(t)
+	setupNoInternetConnection()
 
 	mockWinChecker.On("IsRunningOnWsl2").Return(true)
 	mockDnsConfigurer.On("DisableResolveAutoConfGeneration").Return()
@@ -61,6 +83,7 @@ func TestPerformsDirectConfigWhenPublicDnsIsReachable(t *testing.T) {
 
 func TestPerformsConfigViaProxyWhenPublicDnsIsReachable(t *testing.T) {
 	setupHandler(t)
+	setupNoInternetConnection()
 
 	mockWinChecker.On("IsRunningOnWsl2").Return(true)
 	mockDnsConfigurer.On("DisableResolveAutoConfGeneration").Return()

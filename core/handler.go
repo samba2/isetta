@@ -15,6 +15,7 @@ type Handler struct {
 	EnvVarPrinter     EnvVarPrinter
 	DirectAccess      NetworkConfigurer
 	ViaProxy          NetworkConfigurer
+	InternetChecker   InternetChecker
 }
 
 func (h *Handler) PrintEnvVars() {
@@ -30,10 +31,16 @@ func (h *Handler) ConfigureNetwork() error {
 	if !h.RunningAsRoot {
 		return errors.New("to configure the network 'isetta' needs to run as root. Try running via sudo")
 	}
-
+	
 	err := h.checkRunningOnWsl()
 	if err != nil {
 		return err
+	}
+	
+	log.Logger.Info("Checking if internet can already by reached via HTTP")
+	if h.InternetChecker.HasInternetAccess() {
+		log.Logger.Info("Internet is already accessible. No further setup needed")
+		return nil
 	}
 
 	h.DnsConfigurer.DisableResolveAutoConfGeneration()
