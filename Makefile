@@ -1,12 +1,7 @@
-MOCKERY_RELEASE=https://github.com/vektra/mockery/releases/download/v2.22.1/mockery_2.22.1_Linux_x86_64.tar.gz
+MOCKERY=/root/go/bin/mockery
 
-tmp/mockery:
-	mkdir -p tmp/
-	cd tmp/ && \
-	curl -L $(MOCKERY_RELEASE) | tar xvz
-
-mocks: tmp/mockery
-	tmp/mockery --all --dir core/
+mocks:
+	$(MOCKERY) --all --dir core/
 
 test: unit-test architecture-test
 
