@@ -2,8 +2,6 @@ module org.samba/isetta
 
 go 1.21.0
 
-toolchain go1.22.1
-
 require (
 	github.com/3th1nk/cidr v0.2.0
 	github.com/go-ping/ping v1.2.0
