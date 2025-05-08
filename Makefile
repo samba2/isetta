@@ -40,8 +40,7 @@ architecture-test: $(ARCH_GO)
 
 $(ARCH_GO): 
 	unset GOPATH && \
-	go get github.com/fdaines/arch-go && \
-	go install github.com/fdaines/arch-go
+	go install github.com/fdaines/arch-go@v1.5.0
 
 isetta:
 	rm -f tmp/isetta
