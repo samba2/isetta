@@ -28,5 +28,5 @@ jobs:
       run: go install github.com/fdaines/arch-go@v1.5.0
       
     - name: Run architecture test
-      run: arch-go -v
+      run: make architecture-test
       
